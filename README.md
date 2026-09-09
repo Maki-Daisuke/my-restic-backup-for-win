@@ -8,7 +8,8 @@
 
 | ファイル名         | 役割                                                                |
 | :----------------- | :------------------------------------------------------------------ |
-| `config.ps1`       | バックアップ先（NASのパス）や保持期間などの基本設定                 |
+| `config.ps1.example` | バックアップ設定ファイルのサンプル                             |
+| `config.ps1`         | 実運用の設定（Gitの追跡対象外）                                 |
 | `password.txt.example` | リポジトリの暗号化パスワードファイルのサンプル                 |
 | `password.txt`         | 実運用で使うパスワード（Gitの追跡対象外）                       |
 | `exclude.txt`      | キャッシュや一時ファイルなど、除外するパスのリスト                  |
@@ -25,7 +26,8 @@
 
 1. `password.txt.example` を `password.txt` にコピーします。
 2. 作成した `password.txt` をメモ帳等で開き、実運用で使う安全なパスワードを入力して保存します。`password.txt` は `.gitignore` に登録されているため、Gitにはコミットしません。
-3. `config.ps1` を開き、`$script:ResticRepository` を実際のNASの共有パス（例: `\\192.168.1.100\backup\restic-repo`）に書き換えます。
+3. `config.ps1.example` を `config.ps1` にコピーします。
+4. 作成した `config.ps1` を開き、`$script:ResticRepository` を実際のNASの共有パス（例: `\\192.168.1.100\backup\restic-repo`）に、必要に応じて `$script:BackupSourcePath` などを環境に合わせて書き換えます。`config.ps1` は `.gitignore` に登録されているため、Gitにはコミットしません。
 
 ### ステップ 2: リポジトリを初期化する
 
