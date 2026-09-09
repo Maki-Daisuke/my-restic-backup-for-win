@@ -63,12 +63,14 @@ PowerShellを**管理者として実行**し、バックアップを実行しま
    - 「新規」をクリックし、「毎日」好きな時間（例: 深夜 3:00）または「ログオン時」を指定
 5. **操作 タブ**:
    - 「新規」をクリック
-   - プログラム/スクリプト: `powershell.exe`
-   - 引数の追加: `-ExecutionPolicy Bypass -WindowStyle Hidden -File "C:\Users\Daisu\OneDrive\restic-backup\backup.ps1"`
+   - プログラム/スクリプト: `powershell.exe` / `pwsh.exe`
+   - 引数の追加: `-NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -File "<PATH TO>\restic-backup\backup.ps1"`
+   - 開始（オプション）: `<PATH TO>\restic-backup`
 6. 「OK」を押して保存します。
 
----
+> `<PATH TO>` は、`restic-backup` ディレクトリが存在するパスに置き換えてください。
 
+---
 ## バックアップの確認と復元（リストア）
 
 ### バックアップ状況の確認
