@@ -12,6 +12,12 @@ if (-not (Test-Path $configPath)) {
 $env:RESTIC_REPOSITORY    = $script:ResticRepository
 $env:RESTIC_PASSWORD_FILE = $script:PasswordFilePath
 
+# S3 互換（B2）認証環境変数（s3: リポジトリの場合のみ）
+if ($script:ResticRepository -like "s3:*") {
+    $env:AWS_ACCESS_KEY_ID     = $script:S3AccessKeyId
+    $env:AWS_SECRET_ACCESS_KEY = $script:S3SecretAccessKey
+}
+
 try {
     Write-Host "=== スナップショット一覧 ===" -ForegroundColor Cyan
     & restic snapshots
@@ -24,4 +30,6 @@ try {
 } finally {
     $env:RESTIC_REPOSITORY    = $null
     $env:RESTIC_PASSWORD_FILE = $null
+    $env:AWS_ACCESS_KEY_ID     = $null
+    $env:AWS_SECRET_ACCESS_KEY = $null
 }

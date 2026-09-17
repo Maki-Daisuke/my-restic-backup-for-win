@@ -1,18 +1,32 @@
 # restic-backup 設定ファイルのサンプル
 # このファイルを config.ps1 にコピーして、環境に合わせて編集してください。
 
-# バックアップ先リポジトリ（NASのUNCパスまたはマウントされたドライブ）
-# 例: "\\192.168.1.100\backup\restic-repo" または "Z:\restic-repo"
-$script:ResticRepository = "\\NAS_HOSTNAME_OR_IP\backup\restic-repo"
+# バックアップ先リポジトリ
+# - Backblaze B2 (S3互換API・公式推奨): "s3:s3.<リージョン>.backblazeb2.com/BUCKET_NAME"
+# - NAS (UNC):                          "\\192.168.1.100\backup\restic-repo"
+#
+# ※ restic 公式ドキュメントでは、B2 へのバックアップは S3 互換 API の利用を推奨しています。
+#   B2 ネイティブ (b2:) はエラー処理の問題があるため、S3 互換エンドポイントを使うのが確実です。
+#   リージョン例: us-west-004 / us-west-003 / eu-central-004 など（B2 管理画面で確認）
+$script:ResticRepository = "s3:s3.us-west-004.backblazeb2.com/restic-backup"
 
 # リポジトリの暗号化パスワードファイルのパス
 $script:PasswordFilePath = Join-Path $PSScriptRoot "password.txt"
+
+# --- Backblaze B2 (S3互換) 認証情報 ---
+$script:S3AccessKeyId     = "YOUR_B2_S3_ACCESS_KEY_ID"
+$script:S3SecretAccessKey = "YOUR_B2_S3_SECRET_ACCESS_KEY"
 
 # バックアップ対象ディレクトリ（通常はユーザープロファイル全体）
 $script:BackupSourcePath = $env:USERPROFILE
 
 # 除外設定ファイルのパス
 $script:ExcludeFilePath = Join-Path $PSScriptRoot "exclude.txt"
+
+# スナップショットに付与するタグ（任意）
+# 例: "scheduled" / "manual" / "before-update"
+# コマンドラインの -Tag 引数で上書きできます
+$script:BackupTag = "scheduled"
 
 # 世代管理ポリシー（保持するスナップショット数）
 $script:KeepDaily = 7
