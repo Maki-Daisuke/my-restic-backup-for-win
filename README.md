@@ -16,6 +16,7 @@
 | `init-repo.ps1`    | 初回のみ実行するリポジトリ作成スクリプト                            |
 | `backup.ps1`       | バックアップを実行し、古い世代を自動整理するメインスクリプト        |
 | `check-status.ps1` | 保存されたバックアップ一覧や容量、健全性を確認するスクリプト        |
+| `mount.ps1`        | スナップショットをマウントしてエクスプローラで参照するスクリプト    |
 | `backup.log`       | バックアップ実行時の詳細ログ（自動生成されます）                    |
 
 ---
@@ -160,29 +161,43 @@ restic -r "\\NAS_PATH\backup" -p "password.txt" restore latest --target "C:\Rest
 
 ### 「どのファイルがあるか探しながら復元したい」場合
 
-restic の `mount` は Windows ではサポートされていません。公式ドキュメントでも、`mount` は主に Unix/Linux 系の FUSE ベースの利用を想定していて、Windows では使えない前提です。
+`restic mount` は Windows ではサポートされていないため、代わりに **`restic-mount`**（別ツール）を使ってスナップショットをマウントします。
 
-そのため、Windows では以下のような方法を使うのが安全で確実です。
+> `restic-mount` は未インストールの場合は先にインストールしてください（ https://github.com/Maki-Daisuke/restic-mount-win ）。
 
-1. スナップショット一覧を確認する
+#### スクリプトでマウントする（おすすめ）
 
 ```powershell
-restic -r "\\NAS_PATH\backup" -p "password.txt" snapshots
+# 全スナップショットを R: にマウント（ツリー表示）
+.\mount.ps1
+
+# マウント先を指定
+.\mount.ps1 -MountPoint "D:\backup"
+
+# 特定のスナップショットのみマウント
+.\mount.ps1 -Snapshot <snapshot-id>
 ```
 
-2. 目的のファイルやフォルダが明確なら、直接復元する
+マウント中はスクリプトがブロックされます。エクスプローラで `R:` を開いて、スナップショットのツリーから必要なファイルを探しながらコピーしてください。解除するには `Ctrl+C` を押します。
+
+#### 直接 restic-mount を使う場合
+
+```powershell
+# 環境変数を設定
+$env:RESTIC_REPOSITORY    = "\\NAS_PATH\backup"
+$env:RESTIC_PASSWORD_FILE = "password.txt"
+
+# マウント（Ctrl+C で解除）
+restic-mount R:
+```
+
+#### マウントなしで直接復元する場合
+
+目的のファイルが明確なら、マウントせずに直接復元するほうが簡単です。
 
 ```powershell
 # 最新のスナップショットを C:\Restore に復元する場合
 restic -r "\\NAS_PATH\backup" -p "password.txt" restore latest --target "C:\Restore"
 ```
-
-3. 復元後にエクスプローラでファイルを見て、必要なものだけ別の保存先にコピーする
-
-```powershell
-copy "C:\Restore\Users\<ユーザー名>\Desktop\file.txt" "D:\Recovered\file.txt"
-```
-
-> Windows では「バックアップをマウントしてエクスプローラで探す」方法より、まず `restore` で復元してから見つけるほうが安定します。
 
 ---
