@@ -2,22 +2,38 @@
 # restic 除外設定リスト (exclude.txt)
 # ==============================================================================
 # Windows システム一時ファイル・ゴミ箱
-$RECYCLE.BIN
-System Volume Information
-pagefile.sys
-swapfile.sys
-hiberfil.sys
-DumpStack.log*
+/$Recycle.Bin
+/Config.Msi
+/found.*
+/OneDriveTemp
+/PerfLogs
+/tmp
+/DumpStack.log*
+/pagefile.sys
+/swapfile.sys
+/hiberfil.sys
+
+# Windows システム・プログラム
+/Program Files
+/Program Files (x86)
+/ProgramData
+/Recovery
+/System Volume Information
+/Windows
+
+# OneDrive
+/Users/*/OneDrive
 
 # ユーザー環境の一時フォルダ・キャッシュ
-**/AppData/Local/Temp/**
-**/AppData/Local/Microsoft/Windows/INetCache/**
-**/AppData/Local/Microsoft/Windows/Explorer/thumbcache_*.db
-**/AppData/Local/Microsoft/Windows/WebCache/**
-**/AppData/Local/CrashDumps/**
-**/AppData/Local/D3DSCache/**
-**/AppData/Local/NVIDIA/DXCache/**
-**/AppData/Local/NVIDIA/GLCache/**
+**/AppData/Local/**
+#**/AppData/Local/Temp/**
+#**/AppData/Local/Microsoft/Windows/INetCache/**
+#**/AppData/Local/Microsoft/Windows/Explorer/thumbcache_*.db
+#**/AppData/Local/Microsoft/Windows/WebCache/**
+#**/AppData/Local/CrashDumps/**
+#**/AppData/Local/D3DSCache/**
+#**/AppData/Local/NVIDIA/DXCache/**
+#**/AppData/Local/NVIDIA/GLCache/**
 
 # ブラウザのキャッシュ（ブックマークや履歴などのプロファイル本体は保護されます）
 **/AppData/Local/Google/Chrome/User Data/*/Cache/**
