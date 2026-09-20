@@ -70,7 +70,7 @@ try {
     $backupArgs = @(
         "backup",
         "--verbose",
-        "--exclude-file=$script:ExcludeFilePath"
+        "--iexclude-file=$script:ExcludeFilePath"
     )
 
     # タグの指定（コマンドライン引数 > config.ps1 の順で優先）

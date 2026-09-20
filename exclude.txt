@@ -1,28 +1,32 @@
 # ==============================================================================
 # restic 除外設定リスト (exclude.txt)
 # ==============================================================================
+# ※ restic の除外ファイル内では $ が環境変数として展開されるため、
+#   ゴミ箱（$Recycle.Bin）のように名前に $ を含む場合は $$ と重ねて書く必要があります。
+
 # Windows システム一時ファイル・ゴミ箱
-/$Recycle.Bin
-/Config.Msi
-/found.*
-/OneDriveTemp
-/PerfLogs
-/tmp
-/DumpStack.log*
-/pagefile.sys
-/swapfile.sys
-/hiberfil.sys
+C:/$$Recycle.Bin
+C:/Config.Msi
+C:/found.*
+C:/OneDriveTemp
+C:/PerfLogs
+C:/tmp
+C:/DumpStack.log*
+C:/pagefile.sys
+C:/swapfile.sys
+C:/hiberfil.sys
 
 # Windows システム・プログラム
-/Program Files
-/Program Files (x86)
-/ProgramData
-/Recovery
-/System Volume Information
-/Windows
+C:/Documents and Settings
+C:/Program Files
+C:/Program Files (x86)
+C:/ProgramData
+C:/Recovery
+C:/System Volume Information
+C:/Windows
 
 # OneDrive
-/Users/*/OneDrive
+C:/Users/*/OneDrive
 
 # ユーザー環境の一時フォルダ・キャッシュ
 **/AppData/Local/**
