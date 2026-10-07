@@ -16,6 +16,7 @@
 | `init-repo.ps1`    | 初回のみ実行するリポジトリ作成スクリプト                            |
 | `backup.ps1`       | バックアップを実行し、古い世代を自動整理するメインスクリプト        |
 | `check-status.ps1` | 保存されたバックアップ一覧や容量、健全性を確認するスクリプト        |
+| `exec-cmd.ps1`     | `config.ps1` の環境変数を自動設定して、指定コマンドを実行するラッパー |
 | `mount.ps1`        | スナップショットをマウントしてエクスプローラで参照するスクリプト    |
 | `backup.log`       | バックアップ実行時の詳細ログ（自動生成されます）                    |
 
@@ -150,11 +151,31 @@ S3 互換 API を使う場合、restic は不要になったファイルを「�
 
 これまでのスナップショット（バックアップ履歴）や容量が表示されます。
 
+### 手動メンテナンス用のコマンド実行
+
+`config.ps1` と `password.txt` から `RESTIC_REPOSITORY` / `RESTIC_PASSWORD_FILE` / S3 認証情報を自動でセットして、指定した restic コマンドを実行したいときは `exec-cmd.ps1` を使います。
+
+```powershell
+# stale lock を解除
+./exec-cmd.ps1 restic unlock
+
+# snapshot 一覧を確認
+./exec-cmd.ps1 restic snapshots
+
+# リポジトリを簡易チェック
+./exec-cmd.ps1 restic check
+
+# 任意の restic サブコマンドも同じように実行できます
+./exec-cmd.ps1 restic stats
+```
+
+このラッパーを使うと、毎回 `AWS_ACCESS_KEY_ID` や `RESTIC_PASSWORD_FILE` を手書きで設定する手間が省けます。実行後は環境変数は自動的にクリアされるので、シェルの状態が汚れません。
+
 ### データの復元（例: 最新の状態に戻す）
 
 ```powershell
 # 最新のスナップショットを C:\Restore に復元する場合
-restic -r "\\NAS_PATH\backup" -p "password.txt" restore latest --target "C:\Restore"
+./exec-cmd.ps1 restic restore latest --target "C:\Restore"
 ```
 
 特定のフォルダ（例: `AppData\Roaming\obs-studio` だけ）を復元することも可能です。
@@ -183,12 +204,8 @@ restic -r "\\NAS_PATH\backup" -p "password.txt" restore latest --target "C:\Rest
 #### 直接 restic-mount を使う場合
 
 ```powershell
-# 環境変数を設定
-$env:RESTIC_REPOSITORY    = "\\NAS_PATH\backup"
-$env:RESTIC_PASSWORD_FILE = "password.txt"
-
-# マウント（Ctrl+C で解除）
-restic-mount R:
+# 環境変数の設定を自動化してマウントを実行
+./exec-cmd.ps1 restic-mount R:
 ```
 
 #### マウントなしで直接復元する場合
@@ -197,7 +214,7 @@ restic-mount R:
 
 ```powershell
 # 最新のスナップショットを C:\Restore に復元する場合
-restic -r "\\NAS_PATH\backup" -p "password.txt" restore latest --target "C:\Restore"
+./exec-cmd.ps1 restic restore latest --target "C:\Restore"
 ```
 
 ---
